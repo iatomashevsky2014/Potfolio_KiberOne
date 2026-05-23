@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Моё портфолио | Путь в IT</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <!-- Блок: Описание сайта -->
+  <div class="hero glass-card">
+    <h1><i class="fas fa-rocket"></i> Моя IT‑траектория</h1>
+    <div class="hero-description" id="siteDescText">
+      Здесь я собрал модули, которые прошёл на пути в IT. Каждый из них даёт мне навыки для создания игр, управления серверами, разработки приложений и дизайна. Сайт полностью редактируется — я сам заполняю портфолио.
+    </div>
+    <button class="edit-icon" id="editSiteDescBtn"><i class="fas fa-pen"></i> Редактировать описание</button>
+  </div>
+
+  <!-- Блок: Кем я вижу себя в будущем (текст изменён по вашему желанию) -->
+  <section>
+    <h2 class="section-title"><i class="fas fa-user-astronaut"></i> Кем я вижу себя в будущем</h2>
+    <div class="future-block glass-card">
+      <div class="future-text" id="futureVisionText">
+        Я хочу стать IT-шником, развивать будущее, писать новые игры, создавать сервера, быть полезным для людей.
+      </div>
+      <button class="edit-icon" id="editFutureBtn"><i class="fas fa-edit"></i> Редактировать видение</button>
+    </div>
+  </section>
+
+  <!-- Секция: Пройденные модули (vibecoding, этичный хакинг, figma, tilda, vkstore, thunkable) -->
+  <section>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <h2 class="section-title"><i class="fas fa-code-branch"></i> Пройденные модули</h2>
+      <button class="edit-icon" id="openAddModuleBtn" style="background:#5f72ee40;"><i class="fas fa-plus-circle"></i> Добавить модуль</button>
+    </div>
+    <div class="modules-grid" id="modulesGrid"></div>
+    <div id="emptyModulesMsg" style="display: none; text-align: center; padding: 2rem;">Модули появятся здесь. Нажмите «Добавить модуль».</div>
+  </section>
+
+  <!-- Секция: Любимые проекты / что я делал -->
+  <section>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <h2 class="section-title"><i class="fas fa-heart"></i> Мои работы и любимые задания</h2>
+      <button class="edit-icon" id="openAddFavoriteBtn" style="background:#5f72ee40;"><i class="fas fa-plus-circle"></i> Добавить проект</button>
+    </div>
+    <div class="favorites-grid" id="favoritesGrid"></div>
+    <div id="emptyFavMsg" style="display: none; text-align: center; padding: 2rem;">Добавьте свой первый проект или любимое задание.</div>
+  </section>
+
+  <footer>✨ Редактируй любую карточку — портфолио настраивается под тебя. Все данные сохраняются в браузере.</footer>
+</div>
+
+<!-- Модальные окна -->
+<div id="modalSiteDesc" class="modal"><div class="modal-content"><h3><i class="fas fa-globe"></i> Описание сайта</h3><textarea id="siteDescInput" rows="4"></textarea><div class="modal-buttons"><button class="cancel-modal" id="closeSiteDescModal">Отмена</button><button class="save-modal" id="saveSiteDescBtn">Сохранить</button></div></div></div>
+<div id="modalFuture" class="modal"><div class="modal-content"><h3><i class="fas fa-chart-line"></i> Моё будущее</h3><textarea id="futureInput" rows="5"></textarea><div class="modal-buttons"><button class="cancel-modal" id="closeFutureModal">Отмена</button><button class="save-modal" id="saveFutureBtn">Сохранить</button></div></div></div>
+<div id="moduleModal" class="modal"><div class="modal-content"><h3 id="moduleModalTitle"><i class="fas fa-cube"></i> Модуль</h3><input type="text" id="moduleName" placeholder="Название модуля"><textarea id="moduleDesc" rows="2" placeholder="Что изучили?"></textarea><textarea id="moduleHelp" rows="2" placeholder="Как это поможет в IT (игры, сервера и т.д.)?"></textarea><input type="hidden" id="moduleEditId"><div class="modal-buttons"><button class="cancel-modal" id="closeModuleModal">Отмена</button><button class="save-modal" id="saveModuleBtn">Сохранить</button></div></div></div>
+<div id="favoriteModal" class="modal"><div class="modal-content"><h3 id="favModalTitle"><i class="fas fa-star"></i> Любимый проект / задание</h3><input type="text" id="favName" placeholder="Название"><textarea id="favDesc" rows="2" placeholder="Что именно понравилось / что сделали?"></textarea><textarea id="favAchieve" rows="2" placeholder="Результат / фишки (ссылка, скриншот)"></textarea><input type="hidden" id="favEditId"><div class="modal-buttons"><button class="cancel-modal" id="closeFavModal">Отмена</button><button class="save-modal" id="saveFavBtn">Сохранить</button></div></div></div>
+
+<script>
+  // ---------- Данные: модули и проекты ----------
+  let modules = [];
+  let favorites = [];
+  let siteDescription = "Здесь я собрал модули, которые прошёл на пути в IT. Каждый из них даёт мне навыки для создания игр, управления серверами, разработки приложений и дизайна. Сайт полностью редактируется — я сам заполняю портфолио.";
+  let futureVision = "Я хочу стать IT-шником, развивать будущее, писать новые игры, создавать сервера, быть полезным для людей.";
+
+  // Ваши 6 модулей
+  const defaultModules = [
+    { id: "mod_vibe", name: "Vibecoding", description: "Основы алгоритмики, работа со звуком и визуальными эффектами, создание интерактивных историй.", help: "Поможет писать игры: разбираться в логике игровых процессов, анимации и обработке пользовательского ввода." },
+    { id: "mod_hack", name: "Этичный хакинг", description: "Тестирование на проникновение, анализ уязвимостей, безопасность сетей и веб-приложений.", help: "Позволит защищать сервера от атак, находить баги в своей архитектуре, строить надёжные бэкенды." },
+    { id: "mod_figma", name: "Figma", description: "UI/UX дизайн, прототипирование, работа с компонентами и авто-лейаутами.", help: "Научусь проектировать интерфейсы игр и приложений, понимать клиентский опыт — важный скилл для IT-шника." },
+    { id: "mod_tilda", name: "Tilda", description: "Блочная вёрстка, Zero-block, адаптивные сайты без кода.", help: "Ускорю создание лендингов для своих проектов, смогу быстро презентовать идеи игр или сервисов." },
+    { id: "mod_vkstore", name: "VK Store", description: "Разработка мини-приложений для ВКонтакте, интеграция с API соцсети.", help: "Научусь создавать приложения, которые работают внутри экосистемы VK — отличный старт для карьеры фронтенд-разработчика." },
+    { id: "mod_thunkable", name: "Thunkable", description: "Визуальное программирование для мобильных приложений (iOS/Android).", help: "Поможет быстро прототипировать мобильные игры и утилиты, понять логику клиент-серверного взаимодействия." }
+  ];
+
+  const defaultFavorites = [
+    { id: "fav_demo1", name: "Игровой прототип на Thunkable", description: "Создал 2D-платформер с физикой и сохранением рекордов.", achievement: "Опубликовал тестовую версию в Google Play — получил первые установки." },
+    { id: "fav_demo2", name: "Анализ серверных логов (этичный хакинг)", description: "Провёл пентест учебного сервера, нашёл уязвимости через SQL-инъекции.", achievement: "Повысил безопасность своего пет-проекта на 80%." },
+    { id: "fav_demo3", name: "Дизайн-система в Figma для игры", description: "Отрисовал стиль и UI для RPG-игры, создал библиотеку компонентов.", achievement: "Макет использовался в командном хакатоне и получил приз зрительских симпатий." }
+  ];
+
+  function loadFromLocal() {
+    const savedModules = localStorage.getItem('portfolio_modules');
+    const savedFavorites = localStorage.getItem('portfolio_favorites');
+    const savedSiteDesc = localStorage.getItem('portfolio_siteDesc');
+    const savedFuture = localStorage.getItem('portfolio_future');
+    modules = savedModules ? JSON.parse(savedModules) : [...defaultModules];
+    favorites = savedFavorites ? JSON.parse(savedFavorites) : [...defaultFavorites];
+    if (savedSiteDesc) siteDescription = savedSiteDesc;
+    if (savedFuture) futureVision = savedFuture;
+  }
+  function saveAllToLocal() {
+    localStorage.setItem('portfolio_modules', JSON.stringify(modules));
+    localStorage.setItem('portfolio_favorites', JSON.stringify(favorites));
+    localStorage.setItem('portfolio_siteDesc', siteDescription);
+    localStorage.setItem('portfolio_future', futureVision);
+  }
+
+  function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
+
+  function renderModules() {
+    const grid = document.getElementById('modulesGrid');
+    const emptyMsg = document.getElementById('emptyModulesMsg');
+    if (!modules.length) { grid.innerHTML = ''; emptyMsg.style.display = 'block'; return; }
+    emptyMsg.style.display = 'none';
+    grid.innerHTML = modules.map(mod => `
+      <div class="module-card glass-card" data-id="${mod.id}">
+        <div class="card-title"><span>📘 ${escapeHtml(mod.name)}</span></div>
+        <div class="card-desc">📖 ${escapeHtml(mod.description)}</div>
+        <div class="card-help"><i class="fas fa-lightbulb"></i> Как поможет: ${escapeHtml(mod.help || "Развивает навыки для IT-сферы")}</div>
+        <div class="card-actions">
+          <button class="edit-module-btn" data-id="${mod.id}"><i class="fas fa-pen"></i> Правка</button>
+          <button class="delete-module-btn" data-id="${mod.id}"><i class="fas fa-trash"></i> Удалить</button>
+        </div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.edit-module-btn').forEach(btn => btn.addEventListener('click', () => openModuleEdit(btn.getAttribute('data-id'))));
+    document.querySelectorAll('.delete-module-btn').forEach(btn => btn.addEventListener('click', () => { if(confirm("Удалить модуль?")) { modules = modules.filter(m => m.id !== btn.getAttribute('data-id')); renderModules(); saveAllToLocal(); } }));
+  }
+
+  function renderFavorites() {
+    const grid = document.getElementById('favoritesGrid');
+    const emptyMsg = document.getElementById('emptyFavMsg');
+    if (!favorites.length) { grid.innerHTML = ''; emptyMsg.style.display = 'block'; return; }
+    emptyMsg.style.display = 'none';
+    grid.innerHTML = favorites.map(fav => `
+      <div class="favorite-card glass-card" data-id="${fav.id}">
+        <div class="card-title"><span>⭐ ${escapeHtml(fav.name)}</span></div>
+        <div class="card-desc">✨ ${escapeHtml(fav.description)}</div>
+        ${fav.achievement ? `<div class="card-help"><i class="fas fa-trophy"></i> Что сделал: ${escapeHtml(fav.achievement)}</div>` : ''}
+        <div class="card-actions">
+          <button class="edit-fav-btn" data-id="${fav.id}"><i class="fas fa-edit"></i> Правка</button>
+          <button class="delete-fav-btn" data-id="${fav.id}"><i class="fas fa-trash-alt"></i> Удалить</button>
+        </div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.edit-fav-btn').forEach(btn => btn.addEventListener('click', () => openFavoriteEdit(btn.getAttribute('data-id'))));
+    document.querySelectorAll('.delete-fav-btn').forEach(btn => btn.addEventListener('click', () => { if(confirm("Удалить запись?")) { favorites = favorites.filter(f => f.id !== btn.getAttribute('data-id')); renderFavorites(); saveAllToLocal(); } }));
+  }
+
+  function renderStaticTexts() {
+    document.getElementById('siteDescText').innerHTML = escapeHtml(siteDescription);
+    document.getElementById('futureVisionText').innerHTML = escapeHtml(futureVision).replace(/\n/g, '<br>');
+  }
+
+  // Модалки модулей
+  const moduleModal = document.getElementById('moduleModal');
+  const moduleNameInp = document.getElementById('moduleName');
+  const moduleDescInp = document.getElementById('moduleDesc');
+  const moduleHelpInp = document.getElementById('moduleHelp');
+  const moduleEditId = document.getElementById('moduleEditId');
+  let currentModuleId = null;
+
+  function openModuleAdd() { currentModuleId = null; moduleNameInp.value = ''; moduleDescInp.value = ''; moduleHelpInp.value = ''; document.getElementById('moduleModalTitle').innerHTML = '<i class="fas fa-plus"></i> Добавить модуль'; moduleModal.style.display = 'flex'; }
+  function openModuleEdit(id) { const mod = modules.find(m => m.id === id); if(!mod) return; currentModuleId = id; moduleNameInp.value = mod.name; moduleDescInp.value = mod.description; moduleHelpInp.value = mod.help || ''; moduleEditId.value = id; document.getElementById('moduleModalTitle').innerHTML = '<i class="fas fa-edit"></i> Редактировать модуль'; moduleModal.style.display = 'flex'; }
+  function saveModuleFromModal() { const name = moduleNameInp.value.trim(); if(!name){ alert("Название обязательно"); return; } if(currentModuleId){ const idx = modules.findIndex(m => m.id === currentModuleId); if(idx !== -1) modules[idx] = { ...modules[idx], name, description: moduleDescInp.value.trim(), help: moduleHelpInp.value.trim() }; } else { modules.push({ id: Date.now()+'_'+Math.random(), name, description: moduleDescInp.value.trim(), help: moduleHelpInp.value.trim() }); } renderModules(); saveAllToLocal(); moduleModal.style.display = 'none'; }
+  function closeModuleModal() { moduleModal.style.display = 'none'; }
+
+  // Модалки фаворитов
+  const favModal = document.getElementById('favoriteModal');
+  const favNameInp = document.getElementById('favName');
+  const favDescInp = document.getElementById('favDesc');
+  const favAchieveInp = document.getElementById('favAchieve');
+  const favEditId = document.getElementById('favEditId');
+  let currentFavId = null;
+
+  function openFavoriteAdd() { currentFavId = null; favNameInp.value = ''; favDescInp.value = ''; favAchieveInp.value = ''; document.getElementById('favModalTitle').innerHTML = '<i class="fas fa-heart"></i> Добавить любимый проект'; favModal.style.display = 'flex'; }
+  function openFavoriteEdit(id) { const fav = favorites.find(f => f.id === id); if(!fav) return; currentFavId = id; favNameInp.value = fav.name; favDescInp.value = fav.description; favAchieveInp.value = fav.achievement || ''; favEditId.value = id; document.getElementById('favModalTitle').innerHTML = '<i class="fas fa-edit"></i> Редактировать работу'; favModal.style.display = 'flex'; }
+  function saveFavFromModal() { const name = favNameInp.value.trim(); if(!name){ alert("Укажите название"); return; } if(currentFavId){ const idx = favorites.findIndex(f => f.id === currentFavId); if(idx !== -1) favorites[idx] = { ...favorites[idx], name, description: favDescInp.value.trim(), achievement: favAchieveInp.value.trim() }; } else { favorites.push({ id: Date.now()+'_fav_'+Math.random(), name, description: favDescInp.value.trim(), achievement: favAchieveInp.value.trim() }); } renderFavorites(); saveAllToLocal(); favModal.style.display = 'none'; }
+  function closeFavModal() { favModal.style.display = 'none'; }
+
+  // Текстовые модалки
+  const siteModal = document.getElementById('modalSiteDesc');
+  const siteInput = document.getElementById('siteDescInput');
+  function openSiteDescModal() { siteInput.value = siteDescription; siteModal.style.display = 'flex'; }
+  function saveSiteDesc() { siteDescription = siteInput.value.trim() || "Моё портфолио"; renderStaticTexts(); saveAllToLocal(); siteModal.style.display = 'none'; }
+  const futureModal = document.getElementById('modalFuture');
+  const futureInput = document.getElementById('futureInput');
+  function openFutureModal() { futureInput.value = futureVision; futureModal.style.display = 'flex'; }
+  function saveFuture() { futureVision = futureInput.value.trim() || "Я хочу стать IT-шником, развивать будущее, писать новые игры, создавать сервера, быть полезным для людей."; renderStaticTexts(); saveAllToLocal(); futureModal.style.display = 'none'; }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadFromLocal();
+    renderModules();
+    renderFavorites();
+    renderStaticTexts();
+    document.getElementById('editSiteDescBtn').addEventListener('click', openSiteDescModal);
+    document.getElementById('editFutureBtn').addEventListener('click', openFutureModal);
+    document.getElementById('openAddModuleBtn').addEventListener('click', openModuleAdd);
+    document.getElementById('openAddFavoriteBtn').addEventListener('click', openFavoriteAdd);
+    document.getElementById('saveSiteDescBtn').addEventListener('click', saveSiteDesc);
+    document.getElementById('closeSiteDescModal').addEventListener('click', () => siteModal.style.display='none');
+    document.getElementById('saveFutureBtn').addEventListener('click', saveFuture);
+    document.getElementById('closeFutureModal').addEventListener('click', () => futureModal.style.display='none');
+    document.getElementById('saveModuleBtn').addEventListener('click', saveModuleFromModal);
+    document.getElementById('closeModuleModal').addEventListener('click', closeModuleModal);
+    document.getElementById('saveFavBtn').addEventListener('click', saveFavFromModal);
+    document.getElementById('closeFavModal').addEventListener('click', closeFavModal);
+    window.addEventListener('click', (e) => { if(e.target === moduleModal) closeModuleModal(); if(e.target === favModal) closeFavModal(); if(e.target === siteModal) siteModal.style.display='none'; if(e.target === futureModal) futureModal.style.display='none'; });
+  });
+</script>
+</body>
+</html>
